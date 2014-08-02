@@ -42,7 +42,7 @@ function run() {
                     #rsync --update --archive --links --safe-links --verbose --compress --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' "${_local_path}/*" "${_remote_destiny}"
 		fi;
 	    else
-		_waiting=1000;
+		_waiting=1;
 	    fi;
 	    done)
     
