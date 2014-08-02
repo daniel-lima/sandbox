@@ -24,7 +24,7 @@ function install_rsync() {
 
 function install_sshpass() {
     if ! which sshpass; then
-	if which sshpass; then
+	if which apt-get; then
 	    echo 'Installing sshpass'
 	    sudo apt-get -y install sshpass
 	fi
