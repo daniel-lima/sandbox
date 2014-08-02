@@ -49,16 +49,16 @@ function run() {
 
 	local _remote_user=`echo "${_remote_destiny}" | cut -f1 -d'@'`
 	_remote_destiny=`echo "${_remote_destiny}" | cut -f2 -d'@'`
-
 	_rsync_extra_arg="--rsh='sshpass -e ssh -l ${_remote_user}'"
     fi
 
+    _rsync_cmd="rsync --update --archive --links --safe-links --verbose --progressive --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' ${_rsync_extra_arg} '${_local_path}' '${_remote_destiny}'"
 
     # http://stackoverflow.com/questions/20370566/inotify-and-rsync-on-large-number-of-files
     local _events="CREATE,DELETE,MODIFY,MOVED_FROM,MOVED_TO"
     
-    echo "inotifywait -e '${_events}' -m -r --format '%:e %f' '${_local_path}' --excludei '\.git' --excludei '\.svn' --excludei '.\+~'"
-    inotifywait -e "${_events}" -m -r --format '%:e %f' "${_local_path}" --excludei '\.git' --excludei '\.svn' --excludei '.\+~' | (
+    #echo "inotifywait -e '${_events}' -m -r --format '%:e %f' '${_local_path}' --excludei '\.git' --excludei '\.svn' --excludei '.\+~'"
+    inotifywait --event "${_events}"  --monitor --recursive --format '%:e %f' "${_local_path}" --excludei '\.git' --excludei '\.svn' --excludei '.\+~' | (
 	local _reading_events="";
 	while true; do
 	    local _line=;
@@ -67,17 +67,14 @@ function run() {
 		if test -n "${_reading_events}"; then
                     echo "CHANGE";
                     _reading_events=;
-		    echo "rsync --update --archive --links --safe-links --verbose --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' '${_rsync_extra_arg}' '${_local_path}/*' '${_remote_destiny}'"
-                    #rsync --update --archive --links --safe-links --verbose --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' "${_rsync_extra_arg}" "${_local_path}/*" "${_remote_destiny}"
+		    #echo "${_rsync_cmd}"
+		    eval "${_rsync_cmd}"
 		fi;
 	    else
 		# It will read all events before trying to rsync anything
 		_reading_events=1;
 	    fi;
 	    done)
-    
-
-
 }
 
 
