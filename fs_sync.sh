@@ -52,7 +52,7 @@ function run() {
 	_rsync_extra_arg="--rsh='sshpass -e ssh -l ${_remote_user}'"
     fi
 
-    _rsync_cmd="rsync --update --archive --links --safe-links --verbose --progress --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' ${_rsync_extra_arg} '${_local_path}' '${_remote_destiny}'"
+    _rsync_cmd="rsync --update --archive --links --safe-links --verbose --progress --recursive --exclude '\.git' --exclude '\.svn' --exclude '.\+~' ${_rsync_extra_arg} '${_local_path}'/* '${_remote_destiny}'"
 
     # http://stackoverflow.com/questions/20370566/inotify-and-rsync-on-large-number-of-files
     local _events="CREATE,DELETE,MODIFY,MOVED_FROM,MOVED_TO"
